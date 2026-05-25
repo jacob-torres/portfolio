@@ -1,0 +1,16 @@
+{
+  "name": "jacob-torres-portfolio",
+  "version": "1.0.0",
+  "description": "Personal portfolio site for Jacob A. Torres",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "keywords": [],
+  "author": "Jacob A. Torres",
+  "license": "ISC",
+  "dependencies": {
+    "astro": "^6.3.7"
+  }
+}
