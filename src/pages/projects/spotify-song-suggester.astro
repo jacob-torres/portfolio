@@ -22,8 +22,7 @@ import Layout from '../../layouts/Layout.astro';
     <p>
       <a
         href="https://spotify.com/"
-        rel="external noopener"
-        aria-label="Spotify (opens in new tab)">Spotify</a
+        rel="external noopener">Spotify</a
       > is one of the most popular music streaming services in the world. For one
       of my most interesting projects yet, I was tasked with writing and training
       a machine learning model to suggest songs to a Spotify user based on their
@@ -35,8 +34,7 @@ import Layout from '../../layouts/Layout.astro';
       model with
       <a
         href="https://scikit-learn.org/stable/"
-        rel="external noopener"
-        aria-label="scikit-learn (opens in new tab)">scikit-learn</a
+        rel="external noopener">scikit-learn</a
       > to generate 10 recommended songs from the dataset which most closely matched
       the attributes of the input songs. This model is an unsupervised classification
       problem, meaning the model has no "target variable" to learn from.
@@ -47,7 +45,6 @@ import Layout from '../../layouts/Layout.astro';
       <a
         href="https://github.com/jacob-torres/Spotify-Song-Suggester"
         rel="external noopener"
-        aria-label="Spotify Song Suggester repository on GitHub (opens in new tab)"
         >Spotify Song Suggester repository</a
       >, and the full Jupyter notebook is
       <a href="/notebooks/spotify-nearest-neighbors-model.html">available here</a>.
@@ -162,7 +159,6 @@ import Layout from '../../layouts/Layout.astro';
       <a
         href="https://pandas.pydata.org/docs/reference/api/pandas.to_datetime.html"
         rel="external noopener"
-        aria-label="pandas to_datetime documentation (opens in new tab)"
         >pandas datetime object</a
       >, possibly giving us more information.
     </p>
@@ -237,7 +233,6 @@ distances, indices = neighbors.kneighbors(my_girl_track)
       <a
         href="https://www.tensorflow.org/tutorials/generative/autoencoder"
         rel="external noopener"
-        aria-label="TensorFlow autoencoder tutorial (opens in new tab)"
         >autoencoder neural network</a
       > to process unlabeled song data and perhaps output more accurate results.
     </p>

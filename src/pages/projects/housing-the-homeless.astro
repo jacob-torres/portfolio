@@ -1,0 +1,228 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout
+  title="Housing the Homeless | Jacob A. Torres"
+  description="A statistical analysis of state investment in permanent supportive housing and its effect on homelessness, 2007 to 2019."
+>
+  <a href="/projects#data-science" class="back-link">&larr; Back to Projects</a>
+
+  <article class="article-body">
+    <div class="article-header">
+      <h1>Housing the Homeless</h1>
+      <p class="article-subtitle">
+        Does investing in permanent housing for the homeless significantly
+        decrease homelessness?
+      </p>
+      <p class="article-date">
+        <time datetime="2020-10-25">October 25, 2020</time>
+      </p>
+    </div>
+
+    <p>
+      I just completed an analysis of the most recent available data on
+      homelessness in the United States, collected and provided by the
+      Department of Housing and Urban Development (HUD).
+    </p>
+
+    <p>
+      The analysis uses the
+      <a href="https://www.hudexchange.info/resource/3031/pit-and-hic-data-since-2007/"
+        >PIT and HIC data since 2007</a
+      >, and the working notebook is on
+      <a
+        href="https://colab.research.google.com/drive/1gaTCKCk37ElCcl9m-uFt_rvt_InQ1TXt?usp=sharing"
+        >Google Colab</a
+      >.
+    </p>
+
+    <h2>An analysis of investment in permanent supportive housing</h2>
+
+    <p>
+      Homelessness is an unfortunate and difficult problem facing not just the
+      United States, but the entire world. Everywhere on this planet where there
+      are humans, there are humans without homes. It's estimated that there were
+      567,715 unhoused people living in the United States in January 2019. From
+      2018 to 2019, homelessness has been trending upward.<a
+        href="#housing-note-1"
+        id="housing-ref-1"
+        aria-label="Footnote 1"><sup>1</sup></a
+      > But as my analysis shows, there's still reason for hope.
+    </p>
+
+    <p>
+      The <a href="https://www.hudexchange.info/about/">HUD Exchange</a> is an online
+      platform for the free and open exchange of data on affordable housing and
+      homelessness. Organizations involved in housing local homeless people, as
+      well as collecting this data, are funded by the Department of Housing and
+      Urban Development.
+    </p>
+
+    <p>
+      The data used in the analysis are the latest data on the HUD Exchange on
+      homelessness in the United States. This includes the average
+      point-in-time count (PIT) and housing inventory count (HIC) from 2007 to
+      2019.
+    </p>
+
+    <h2>Research question</h2>
+
+    <p>
+      Does a state's investment in permanent supportive housing (PSH) for the
+      homeless significantly decrease the number of homeless people in that
+      state?
+    </p>
+
+    <p>
+      In this analysis, an independent t-test is performed to determine how
+      significant the change in homelessness is based on a state's investment in
+      permanent supportive housing. A result is <em>significant</em> if the
+      p-value falls beneath the significance level of 0.05.
+    </p>
+
+    <p>
+      The amount of investment in a certain type of housing project (for
+      example, permanent housing or emergency shelter) is measured by the number
+      of recorded beds in each category, particularly those that are year-round.
+      In addition, a housing organization's participation in the
+      <a href="https://www.hudexchange.info/programs/hmis/"
+        >Homeless Management Information System</a
+      > (HMIS) may suggest a more standardized approach to targeting homelessness
+      in the area.
+    </p>
+
+    <h2>Hypotheses</h2>
+
+    <ul>
+      <li>
+        <strong>Null hypothesis (H<sub>0</sub>):</strong> The amount of investment
+        in permanent supportive housing did <em>not</em> significantly affect the
+        average change in homelessness between 2007 and 2019.
+      </li>
+      <li>
+        <strong>Alternative hypothesis (H<sub>a</sub>):</strong> The amount of investment
+        in permanent supportive housing <em>significantly decreased</em> the average
+        change in homelessness between 2007 and 2019.
+      </li>
+    </ul>
+
+    <h2>Data exploration</h2>
+
+    <p>
+      In this analysis, I was mostly focused on the average change in PIT count
+      between 2007 and 2019. I wanted to discover how each state's investment in
+      a type of shelter known as
+      <a href="https://www.hudexchange.info/programs/shp/"
+        >permanent supportive housing</a
+      > (PSH) would or would not affect that state's change in homelessness. PSH
+      programs provide supportive, affordable or cost-free housing for individuals
+      and families to help them transition to financial independence.
+    </p>
+
+    <p>
+      My initial analysis of the PIT and housing inventory counts revealed a
+      general downward trend in homelessness between 2007 and 2019. The HIC data
+      distinguished between temporary and more permanent types of shelter, as
+      well as whether or not the beds counted in the HIC participated in the
+      HMIS.
+    </p>
+
+    <p>
+      I created a coolwarm map of the United States showing the states with a
+      decrease in homelessness, versus those with an increase:
+    </p>
+
+    <figure>
+      <img
+        src="/assets/img/coolwarm_map.png"
+        alt="Choropleth map of the United States titled 'The Increase and Decrease in Homelessness by State (2007-2019).' Each state is shaded red for an increase or blue for a decrease. Most of the East Coast, the South, and the Midwest are blue, while a cluster of Mountain West states and Alaska are red."
+        width="1280"
+        height="411"
+        loading="lazy"
+      />
+      <figcaption>
+        Change in homelessness by state, 2007&ndash;2019. Red states saw an
+        increase; blue states saw a decrease.
+      </figcaption>
+    </figure>
+
+    <p>
+      The map distinguishes between the states which showed a decrease in
+      homelessness over the given period, versus those that showed an increase.
+      Based on the data, the states with a decrease in homelessness claimed the
+      highest number of PSH beds.
+    </p>
+
+    <p>
+      In addition, the scatter plot below shows a slight downward trend in
+      homelessness where states participated in the HMIS, which as mentioned
+      above suggests a more standardized approach to homeless sheltering.
+    </p>
+
+    <figure>
+      <img
+        src="/assets/img/scatterplot.png"
+        alt="Scatter plot titled 'Change in Homelessness: Permanent Housing HMIS Participation.' The horizontal axis is the HMIS participation rate for year-round PSH beds, from 0 to 1.0, and the vertical axis is the change in homelessness from 2007 to 2019, from about -0.7 to +0.7. Points are sparse below a participation rate of 0.5 and cluster between 0.6 and 1.0, where most of them sit below zero."
+        width="684"
+        height="458"
+        loading="lazy"
+      />
+      <figcaption>
+        HMIS participation rate for year-round PSH beds against each state's
+        change in homelessness, 2007&ndash;2019.
+      </figcaption>
+    </figure>
+
+    <p>
+      The p-value in the t-test I performed also confirmed the alternative
+      hypothesis made above, as it fell below the significance level of 0.05.
+    </p>
+
+    <h2>Conclusions</h2>
+
+    <p>
+      Based on the analysis above, I believe that it's reasonable to reject the
+      null (H<sub>0</sub>), which states that state investment in PSH shelter for
+      the homeless does <em>not</em> have a significant effect on the change in homelessness
+      in that state. Clearly there is a positive relationship between investment
+      in PSH shelter and decrease in homelessness between 2007 and 2019, meaning
+      that more state investment in this type of semi-permanent shelter would be
+      advisable if our goal is decreasing homelessness.
+    </p>
+
+    <p>
+      Quite obviously, these results force us to ask if the reduction of
+      homelessness is actually our goal or not. If investment in permanent and
+      semi-permanent housing for the homeless ultimately decreases homelessness,
+      then why isn't the United States government interested in making the
+      necessary investments? Why isn't the issue of homelessness mentioned in
+      Congress or the media, except to remark on how inconvenient unhoused
+      people are to the rest of us? It feels to me as though Americans and our
+      governmental representatives would like to pretend that the homeless don't
+      exist and hope they go away, but would rather not lift a finger (or tax a
+      giant corporation) in order to create the world we <em>say</em> we want to
+      live in.
+    </p>
+
+    <p>
+      Regardless, the ingredients for a successful eradication of homelessness
+      require that we ask ourselves difficult questions. The data are clear; but
+      are we committed to follow the analysis where it leads us?
+    </p>
+
+    <h2 id="housing-notes">Notes</h2>
+
+    <ol class="footnotes">
+      <li id="housing-note-1">
+        <a
+          href="https://endhomelessness.org/homelessness-in-america/homelessness-statistics/state-of-homelessness-2020/"
+          >State of Homelessness: 2020 Edition</a
+        >, National Alliance to End Homelessness.
+        <a href="#housing-ref-1" aria-label="Back to footnote 1 reference"
+          >&#8617;</a
+        >
+      </li>
+    </ol>
+  </article>
+</Layout>
