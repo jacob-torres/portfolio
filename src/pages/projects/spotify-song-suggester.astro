@@ -1,0 +1,251 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout
+  title="Spotify Song Suggester | Jacob A. Torres"
+  description="Building a nearest-neighbors recommendation model over half a million Spotify tracks."
+>
+  <a href="/projects#machine-learning" class="back-link">&larr; Back to Projects</a>
+
+  <article class="article-body">
+    <div class="article-header">
+      <h1>Spotify Song Suggester</h1>
+      <p class="article-subtitle">
+        Using a nearest-neighbors model to suggest the best music for anyone
+      </p>
+      <p class="article-date">
+        <time datetime="2022-03-17">March 17, 2022</time>
+      </p>
+    </div>
+
+    <p>
+      <a
+        href="https://spotify.com/"
+        rel="external noopener"
+        aria-label="Spotify (opens in new tab)">Spotify</a
+      > is one of the most popular music streaming services in the world. For one
+      of my most interesting projects yet, I was tasked with writing and training
+      a machine learning model to suggest songs to a Spotify user based on their
+      liked songs.
+    </p>
+
+    <p>
+      Using a dataset of over half a million songs, I built a nearest-neighbors
+      model with
+      <a
+        href="https://scikit-learn.org/stable/"
+        rel="external noopener"
+        aria-label="scikit-learn (opens in new tab)">scikit-learn</a
+      > to generate 10 recommended songs from the dataset which most closely matched
+      the attributes of the input songs. This model is an unsupervised classification
+      problem, meaning the model has no "target variable" to learn from.
+    </p>
+
+    <p>
+      The code for this project lives in the
+      <a
+        href="https://github.com/jacob-torres/Spotify-Song-Suggester"
+        rel="external noopener"
+        aria-label="Spotify Song Suggester repository on GitHub (opens in new tab)"
+        >Spotify Song Suggester repository</a
+      >, and the full Jupyter notebook is
+      <a href="/notebooks/spotify-nearest-neighbors-model.html">available here</a>.
+    </p>
+
+    <h2>Tools</h2>
+
+    <ul>
+      <li>Python 3.8</li>
+      <li>pandas and NumPy</li>
+      <li>scikit-learn: StandardScaler, PCA, NearestNeighbors</li>
+    </ul>
+
+    <h2>Exploratory data analysis</h2>
+
+    <p>
+      The dataset holds 586,672 tracks and 20 features. Alongside identifying
+      information like track name, artist, and release date, each track carries
+      Spotify's own audio attributes: danceability, energy, key, loudness, mode,
+      speechiness, acousticness, instrumentalness, liveness, valence, tempo, and
+      time signature. Here are the first five tracks, with the audio features
+      that drive the model:
+    </p>
+
+    <div class="table-scroll" tabindex="0" role="region" aria-labelledby="tracks-caption">
+      <table>
+        <caption id="tracks-caption">
+          First five rows of the Spotify tracks dataset
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Artist</th>
+            <th scope="col">Release date</th>
+            <th scope="col">Danceability</th>
+            <th scope="col">Energy</th>
+            <th scope="col">Loudness</th>
+            <th scope="col">Acousticness</th>
+            <th scope="col">Valence</th>
+            <th scope="col">Tempo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Carve</th>
+            <td>Uli</td>
+            <td>1922-02-22</td>
+            <td>0.645</td>
+            <td>0.445</td>
+            <td>&minus;13.338</td>
+            <td>0.674</td>
+            <td>0.127</td>
+            <td>104.851</td>
+          </tr>
+          <tr>
+            <th scope="row">Cap&iacute;tulo 2.16 &mdash; Banquero Anarquista</th>
+            <td>Fernando Pessoa</td>
+            <td>1922-06-01</td>
+            <td>0.695</td>
+            <td>0.263</td>
+            <td>&minus;22.136</td>
+            <td>0.797</td>
+            <td>0.655</td>
+            <td>102.009</td>
+          </tr>
+          <tr>
+            <th scope="row">Vivo para Quererte &mdash; Remasterizado</th>
+            <td>Ignacio Corsini</td>
+            <td>1922-03-21</td>
+            <td>0.434</td>
+            <td>0.177</td>
+            <td>&minus;21.180</td>
+            <td>0.994</td>
+            <td>0.457</td>
+            <td>130.418</td>
+          </tr>
+          <tr>
+            <th scope="row">El Prisionero &mdash; Remasterizado</th>
+            <td>Ignacio Corsini</td>
+            <td>1922-03-21</td>
+            <td>0.321</td>
+            <td>0.0946</td>
+            <td>&minus;27.961</td>
+            <td>0.995</td>
+            <td>0.397</td>
+            <td>169.980</td>
+          </tr>
+          <tr>
+            <th scope="row">Lady of the Evening</th>
+            <td>Dick Haymes</td>
+            <td>1922</td>
+            <td>0.402</td>
+            <td>0.158</td>
+            <td>&minus;16.900</td>
+            <td>0.989</td>
+            <td>0.196</td>
+            <td>103.220</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Data cleaning and preprocessing</h2>
+
+    <p>
+      This structured data looks ideal for the most part. A few things stand out
+      though, mostly the datatype of the <code>release_date</code> feature,
+      which is a string. To make this feature model-friendly, we cut the first
+      four digits (the year) from the string and convert it into an integer. For
+      now the year should be adequate. In later versions we might parse these
+      dates using the
+      <a
+        href="https://pandas.pydata.org/docs/reference/api/pandas.to_datetime.html"
+        rel="external noopener"
+        aria-label="pandas to_datetime documentation (opens in new tab)"
+        >pandas datetime object</a
+      >, possibly giving us more information.
+    </p>
+
+    <p>
+      Now that all of the data is numeric, we can move on to preparing it for
+      modeling. For a preprocessing pipeline, we can use a number of methods. In
+      my first solution, I went with the StandardScaler and principal component
+      analysis (PCA). We can do any number of components when using PCA, and I
+      went with 5. Once these steps are taken, we can start modeling.
+    </p>
+
+    <h2>Nearest neighbors model</h2>
+
+    <p>
+      We go with the standard NearestNeighbors model, an unsupervised learner
+      which can be instantiated with a few different algorithms and a specified
+      number of results to compute. This is not the same as the
+      K-NearestNeighbors classifier, which is a supervised learner. The
+      NearestNeighbors model can make predictions with unlabeled data input.
+      Since this dataset doesn't have a target (which in this case would be
+      "liked" or "not liked"), it can only benefit from an unsupervised
+      solution.
+    </p>
+
+    <p>
+      The model calculates the similarity of the results by measuring the
+      distance between the songs, represented by vectors in virtual space. This
+      is what makes PCA a good algorithm for analyzing the components of song
+      data. It's a much more concise solution for synthesizing the data and
+      extracting meaning from it.
+    </p>
+
+    <p>
+      Below we instantiate the model and set it to find 10 recommendations based
+      on a sample song. Then we print the results and use our intuition on the
+      model's accuracy.
+    </p>
+
+    <pre><code>&#35; NearestNeighbors model
+model = NearestNeighbors(n_neighbors=10, algorithm='kd_tree')
+neighbors = model.fit(X)
+
+&#35; Find nearest neighbors to test track "My Girl"
+my_girl_track = X[38498].reshape(1, -1)
+distances, indices = neighbors.kneighbors(my_girl_track)
+[df.iloc[ind].name for ind in indices]</code></pre>
+
+    <p>The ten nearest tracks to "My Girl":</p>
+
+    <ol>
+      <li>My Girl</li>
+      <li>Hello Walls</li>
+      <li>True Love Will Never Fade</li>
+      <li>Kiss the Girl &mdash; from <cite>The Little Mermaid</cite></li>
+      <li>&#1053;&#1080;&#1082;&#1086;&#1081; &#1085;&#1077; &#1084;&#1086;&#1078;&#1077;</li>
+      <li>Sampa</li>
+      <li>Somebody That I Used To Know</li>
+      <li>The Cuppycake Song</li>
+      <li>Redemption Song &mdash; B Is For Bob Mix</li>
+      <li>Parece Que Fue Ayer</li>
+    </ol>
+
+    <h2>Conclusion</h2>
+
+    <p>
+      While this model is still a work in progress, it demonstrates the power of
+      the nearest-neighbors method in determining the most appropriate
+      recommendations to make based on unlabeled data. My next questions are
+      which metrics are best to test the accuracy of the model, and how I might
+      design an
+      <a
+        href="https://www.tensorflow.org/tutorials/generative/autoencoder"
+        rel="external noopener"
+        aria-label="TensorFlow autoencoder tutorial (opens in new tab)"
+        >autoencoder neural network</a
+      > to process unlabeled song data and perhaps output more accurate results.
+    </p>
+
+    <p>
+      If you'd like to check out the entire Jupyter notebook I used to build and
+      test this model,
+      <a href="/notebooks/spotify-nearest-neighbors-model.html">read it here</a>.
+    </p>
+  </article>
+</Layout>

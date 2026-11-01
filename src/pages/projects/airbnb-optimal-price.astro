@@ -1,0 +1,481 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout
+  title="Airbnb Price Optimizer | Jacob A. Torres"
+  description="Predicting Airbnb listing prices with linear regression, XGBoost, and a Keras neural network."
+>
+  <a href="/projects#machine-learning" class="back-link">&larr; Back to Projects</a>
+
+  <article class="article-body">
+    <div class="article-header">
+      <h1>Airbnb Price Optimizer</h1>
+      <p class="article-subtitle">
+        Entering the 21st-century travel market with math and Python
+      </p>
+      <p class="article-date">
+        <time datetime="2020-12-20">December 20, 2020</time>
+      </p>
+    </div>
+
+    <p>
+      When traveling around the United States, an increasing number of people
+      are looking to the popular service
+      <a
+        href="https://airbnb.com/"
+        rel="external noopener"
+        aria-label="Airbnb (opens in new tab)">Airbnb</a
+      > as an alternative to more traditional options like hotels. There are several
+      main reasons for this trend, including the flexibility of location, housing
+      type, and affordability. It's important for a person interested in listing
+      their home for rent on Airbnb to understand what determines a fair price, so
+      they can enter this booming market with full confidence.
+    </p>
+
+    <p>
+      The dataset was found on
+      <a
+        href="https://kaggle.com/datasets/"
+        rel="external noopener"
+        aria-label="Kaggle datasets (opens in new tab)">Kaggle's database</a
+      > and comprises nearly a quarter of a million Airbnb listings around the United
+      States in 2020. Thanks to
+      <a
+        href="https://github.com/singparvi"
+        rel="external noopener"
+        aria-label="Parvi Singh on GitHub (opens in new tab)">Parvi Singh</a
+      > for collaboration on modeling and deployment.
+    </p>
+
+    <p>
+      The code for this project lives in the
+      <a
+        href="https://github.com/jacob-torres/AirBnB-Optimal-Price"
+        rel="external noopener"
+        aria-label="Airbnb Optimal Price repository on GitHub (opens in new tab)"
+        >Airbnb Optimal Price repository</a
+      >.
+    </p>
+
+    <h2>Tools</h2>
+
+    <ul>
+      <li>pandas, NumPy, and Matplotlib</li>
+      <li>
+        scikit-learn: LinearRegression, One-Hot encoder, OrdinalEncoder,
+        SimpleImputer, StandardScaler
+      </li>
+      <li>XGBoost: XGBoost Regressor</li>
+      <li>TensorFlow: Keras Sequential model</li>
+    </ul>
+
+    <h2>Exploratory data analysis</h2>
+
+    <p>
+      Let's take a look at the data before determining a hypothesis or model.
+      The dataset has 226,030 observations and 17 features; here are the first
+      five listings, with a few of the columns shown.
+    </p>
+
+    <div class="table-scroll" tabindex="0" role="region" aria-labelledby="head-caption">
+      <table>
+        <caption id="head-caption">
+          First five rows of the Airbnb listings dataset
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Neighbourhood</th>
+            <th scope="col">Room type</th>
+            <th scope="col">Price</th>
+            <th scope="col">Minimum nights</th>
+            <th scope="col">Number of reviews</th>
+            <th scope="col">Reviews per month</th>
+            <th scope="col">Availability (365)</th>
+            <th scope="col">City</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Charming Victorian home &mdash; twin beds + breakfast</th>
+            <td>28804</td>
+            <td>Private room</td>
+            <td>60</td>
+            <td>1</td>
+            <td>138</td>
+            <td>1.14</td>
+            <td>0</td>
+            <td>Asheville</td>
+          </tr>
+          <tr>
+            <th scope="row">French Chic Loft</th>
+            <td>28801</td>
+            <td>Entire home/apt</td>
+            <td>470</td>
+            <td>1</td>
+            <td>114</td>
+            <td>1.03</td>
+            <td>288</td>
+            <td>Asheville</td>
+          </tr>
+          <tr>
+            <th scope="row">Walk to stores/parks/downtown. Fenced yard/Pet&hellip;</th>
+            <td>28801</td>
+            <td>Entire home/apt</td>
+            <td>75</td>
+            <td>30</td>
+            <td>89</td>
+            <td>0.81</td>
+            <td>298</td>
+            <td>Asheville</td>
+          </tr>
+          <tr>
+            <th scope="row">Cottage! BonPaul + Sharky's Hostel</th>
+            <td>28806</td>
+            <td>Entire home/apt</td>
+            <td>90</td>
+            <td>1</td>
+            <td>267</td>
+            <td>2.39</td>
+            <td>0</td>
+            <td>Asheville</td>
+          </tr>
+          <tr>
+            <th scope="row">Historic Grove Park</th>
+            <td>28801</td>
+            <td>Private room</td>
+            <td>125</td>
+            <td>30</td>
+            <td>58</td>
+            <td>0.52</td>
+            <td>0</td>
+            <td>Asheville</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      To get a sense of the overall trends in the data, and of whether there are
+      outliers or other anomalies, I used pandas' <code>describe</code> function
+      to get a table of basic stats:
+    </p>
+
+    <div class="table-scroll" tabindex="0" role="region" aria-labelledby="stats-caption">
+      <table>
+        <caption id="stats-caption">
+          Summary statistics for the numeric columns
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Statistic</th>
+            <th scope="col">Price</th>
+            <th scope="col">Minimum nights</th>
+            <th scope="col">Number of reviews</th>
+            <th scope="col">Reviews per month</th>
+            <th scope="col">Host listings count</th>
+            <th scope="col">Availability (365)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Count</th>
+            <td>226,030</td>
+            <td>226,030</td>
+            <td>226,030</td>
+            <td>177,428</td>
+            <td>226,030</td>
+            <td>226,030</td>
+          </tr>
+          <tr>
+            <th scope="row">Mean</th>
+            <td>219.72</td>
+            <td>452.55</td>
+            <td>34.51</td>
+            <td>1.43</td>
+            <td>16.70</td>
+            <td>159.31</td>
+          </tr>
+          <tr>
+            <th scope="row">Standard deviation</th>
+            <td>570.35</td>
+            <td>210,337.60</td>
+            <td>63.60</td>
+            <td>1.68</td>
+            <td>51.07</td>
+            <td>140.18</td>
+          </tr>
+          <tr>
+            <th scope="row">Minimum</th>
+            <td>0</td>
+            <td>1</td>
+            <td>0</td>
+            <td>0.01</td>
+            <td>1</td>
+            <td>0</td>
+          </tr>
+          <tr>
+            <th scope="row">25th percentile</th>
+            <td>75</td>
+            <td>1</td>
+            <td>1</td>
+            <td>0.23</td>
+            <td>1</td>
+            <td>0</td>
+          </tr>
+          <tr>
+            <th scope="row">Median</th>
+            <td>121</td>
+            <td>2</td>
+            <td>8</td>
+            <td>0.81</td>
+            <td>2</td>
+            <td>140</td>
+          </tr>
+          <tr>
+            <th scope="row">75th percentile</th>
+            <td>201</td>
+            <td>7</td>
+            <td>39</td>
+            <td>2.06</td>
+            <td>6</td>
+            <td>311</td>
+          </tr>
+          <tr>
+            <th scope="row">Maximum</th>
+            <td>24,999</td>
+            <td>100,000,000</td>
+            <td>966</td>
+            <td>44.06</td>
+            <td>593</td>
+            <td>365</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      The table above shows that the data has at least one outlier noticeable at
+      a glance: the maximum value of <code>minimum_nights</code> is 100 million.
+      Clearly this is either a mistake or a joke. Regardless, I removed the
+      listing with the outlier from this dataset to decrease the skew.
+    </p>
+
+    <h2>Data wrangling</h2>
+
+    <p>
+      I wrote a function to wrangle the dataset into a clean, pre-processed
+      feature matrix and target vector. This is where scikit-learn especially
+      came in handy; in order to get this table into a format that the model
+      will be able to digest, it needs to be transformed into scaled numeric
+      values.
+    </p>
+
+    <p>
+      In short: I wrote code to turn this beautiful table into some ugly arrays
+      of numbers that the computer can understand. I used this transformed data
+      to fit and train my models.
+    </p>
+
+    <h2>Data modeling</h2>
+
+    <h3>Linear model: linear regression</h3>
+
+    <p>
+      The goal is to build a predictive model which most accurately predicts the
+      price of an Airbnb listing. This is a regression problem, meaning the
+      variable we're targeting (price) could be an infinite number of values.
+      First, we fit a standard linear regression model from scikit-learn,
+      without expecting a super accurate result.
+    </p>
+
+    <p>
+      A linear regression model uses all the algebraic mind gymnastics we
+      learned in high school, like slope and y-intercept, to fit a line to the
+      input data (features of the Airbnb listings). It then applies the equation
+      of that line to predict the price of future listings.
+    </p>
+
+    <p>We test this model using two accuracy scoring methods:</p>
+
+    <ul>
+      <li>
+        <strong>R-squared score (R<sup>2</sup>):</strong> measures the proportion
+        of the predicted outcome whose variance was accurately replicated by the
+        linear model.
+      </li>
+      <li>
+        <strong>Mean squared error (MSE):</strong> measures the average of the squared
+        differences between the predicted and actual values.
+      </li>
+    </ul>
+
+    <p>Here are the results when we fit and test a basic LinearRegression model:</p>
+
+    <pre><code>r2 score = 0.05261821654425727
+MSE      = -92099.40925130853</code></pre>
+
+    <p>For context, these are horrific scores!</p>
+
+    <p>
+      The R<sup>2</sup> score is a value between 0 and 1, representing the
+      percentage of variance that was accurately predicted by the model. An
+      R<sup>2</sup> score of 0.05 means that the model was about 5% accurate
+      &hellip; so not very.
+    </p>
+
+    <p>
+      Since we scored the model using a parameter of the validation function,
+      rather than through the MSE package from scikit-learn, the MSE is
+      represented here as a negative number. This is a quirk of the scorer that
+      is used. The MSE represents the average squared distance between the
+      predicted and actual values, and thus must be a non-negative number.
+    </p>
+
+    <p>
+      The above MSE indicates that the squared variance in predicted and actual
+      data sums up to about 92 thousand, which represents quite a large gap
+      between what the model "thought" the price was and the actual price of the
+      listings.
+    </p>
+
+    <p>
+      The linear regression is often called the "Hello World" of machine
+      learning models, meaning it's the model that is the most basic and simple
+      to explain to beginners. It doesn't have many parameters to tune, and it
+      seemed likely that the data would be better suited to a different
+      algorithm.
+    </p>
+
+    <h3>Tree-based model: XGBoost regressor</h3>
+
+    <p>
+      A tree-based model, as opposed to a linear model, uses a decision tree as
+      its base strategy. The XGBoost regressor is an ensemble model which boosts
+      the correct decisions of each previous estimator to optimize its final
+      decision.
+    </p>
+
+    <p>When we fit the XGBoost regressor to the data, our accuracy increases slightly:</p>
+
+    <pre><code>r2 score = 0.15548775785353622</code></pre>
+
+    <p>
+      15% accuracy is certainly an improvement from 5%, but it's still not
+      great. It was time to bring in the big guns.
+    </p>
+
+    <h3>Neural network: Keras Sequential model</h3>
+
+    <p>
+      In short, a neural network is a machine learning model which has multiple
+      "hidden" layers through which the data is transformed before the final
+      output is computed. A hidden layer can perform any number of computations
+      to improve the given metric. There are many neural network architectures,
+      but perhaps the simplest (and the one used on this data) is the
+      feed-forward model. In this model, data flows predictably from the input
+      layer, through each successive layer, until the output layer.
+    </p>
+
+    <p>
+      Depending on the results of the computations in each neuron of a layer,
+      the output may or may not contribute to the final output. This is the
+      process of determining whether or not a neuron will "fire." The
+      <a
+        href="https://towardsdatascience.com/sigmoid-neuron-deep-neural-networks-a4cd35b629d7"
+        rel="external noopener"
+        aria-label="Sigmoid neuron article on Towards Data Science (opens in new tab)"
+        >sigmoid function</a
+      > is an example of a common activation function which determines whether or
+      not a hidden layer passes its output data to the next layer of the network.
+    </p>
+
+    <p>
+      Putting the Airbnb data through a Keras neural network was a last-ditch
+      effort to get more accurate results from the model. All 226,030 entries
+      and 17 features can be synthesized more vigorously than is possible with a
+      traditional method.
+    </p>
+
+    <p>
+      We evaluate loss as the metric for this model. Loss is the penalty for
+      incorrect predictions, expressed by the sum of all error. If the
+      prediction is perfect, the loss will equal 0. The larger the loss, the
+      less accurate the results. For this test, we use the mean absolute error
+      (MAE) metric as the loss function.
+    </p>
+
+    <p>
+      <strong>Mean absolute error (MAE)</strong> is the magnitude of difference
+      between the expected result and the prediction. This metric indicates the
+      amount of error in the prediction, and is equal to 0 if the actual result
+      was the same as the prediction. Again, the larger this value, the less
+      accurate the results. Note that the mean squared error metric used earlier
+      in this post is an exaggerated version of the MAE: by squaring the
+      differences between the actual and predicted values, the MSE gives a more
+      obvious picture of the inaccuracy of the results.
+    </p>
+
+    <p>
+      For this test, we must set a baseline output against which to compare the
+      prediction results. Using the MAE metric, we determine whether or not the
+      model is performing well by comparing the predicted error with the final
+      error computed by the model.
+    </p>
+
+    <p>
+      Because our target variable is the price of an Airbnb rental, we find the
+      average price in the dataset. The average (mean) price is only the
+      predicted value though, or in other words, it is the value against which
+      we want to compare all other price values. Therefore, the metric of mean
+      absolute error is the mean of the predicted price value subtracted from
+      each entry's price. Here are the results of that computation:
+    </p>
+
+    <pre><code>Mean Absolute Error for Baseline = 1368.8777720114826</code></pre>
+
+    <p>
+      This value is the baseline MAE, and is used after fitting the model to
+      determine how accurate the results are.
+    </p>
+
+    <p>
+      After constructing a standard feed-forward neural network with five hidden
+      layers (not including the output layer), it was time to fit the data to
+      the model. The results come in the form of loss and mean absolute error
+      values for each epoch, an epoch being a single pass of the model over the
+      data. The four epochs which were run on the data produced the following
+      output:
+    </p>
+
+    <pre><code>Epoch 1/4: 80723/80723 - 72s 885us/step - loss: 614.7093 - mean_absolute_error: 614.7093 - val_loss: 568.1913
+Epoch 2/4: 80723/80723 - 70s 868us/step - loss: 570.3614 - mean_absolute_error: 570.3614 - val_loss: 573.1775
+Epoch 3/4: 80723/80723 - 71s 882us/step - loss: 555.7084 - mean_absolute_error: 555.7084 - val_loss: 533.4962
+Epoch 4/4: 80723/80723 - 72s 889us/step - loss: 546.1714 - mean_absolute_error: 546.1714 - val_loss: 517.6982</code></pre>
+
+    <p>
+      This demonstrates a distinct improvement in the training of the model; the
+      initial predicted error was much larger than the error of the final epoch:
+    </p>
+
+    <pre><code>Baseline Mean Absolute Error: 1368.8777720114826
+Model Mean Absolute Error:    517.6982421875
+Improvement:                  62%</code></pre>
+
+    <h2>Conclusions</h2>
+
+    <p>
+      The above modeling is meant to demonstrate a number of training and
+      evaluation techniques on a real-world dataset. It is clear that all
+      dimensions of the data can be used in a neural network to determine an
+      accurate price for any given Airbnb listing, with reasonably low error.
+    </p>
+
+    <p class="note">
+      The original live demo was hosted on Heroku's free tier, which was retired
+      in 2022, so the deployed app is no longer reachable. The model and
+      notebook code are still in the repository linked above.
+    </p>
+  </article>
+</Layout>
