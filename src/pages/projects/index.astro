@@ -22,22 +22,22 @@ import Layout from '../../layouts/Layout.astro';
 
   <nav class="section-nav" aria-label="Project sections">
     <ul>
-      <li><a href="#machine-learning">Machine Learning</a></li>
+      <li><a href="#data-science">Data Science</a></li>
       <li><a href="#web-development">Web Development</a></li>
-      <li><a href="#data-analysis">Data Analysis</a></li>
     </ul>
   </nav>
 
-  <section aria-labelledby="machine-learning">
-    <h2 id="machine-learning">Machine Learning</h2>
+  <section aria-labelledby="data-science">
+    <h2 id="data-science">Data Science</h2>
 
     <p>
       I'm experienced with Python data science tools, Kaggle competitions and
-      Jupyter notebooks, data analysis tools, and building data engineering ETL
-      pipelines.
+      Jupyter notebooks, statistical analysis, and building data engineering ETL
+      pipelines. Below are the models I've built, and a write-up of an analysis
+      of federal housing data.
     </p>
 
-    <ul class="project-list" aria-label="Machine learning projects">
+    <ul class="project-list" aria-label="Data science projects">
       <li class="project-card">
         <span class="tag">Machine Learning</span>
         <h3>
@@ -77,78 +77,6 @@ import Layout from '../../layouts/Layout.astro';
         </p>
       </li>
     </ul>
-  </section>
-
-  <section aria-labelledby="web-development">
-    <h2 id="web-development">Web Development</h2>
-
-    <p>
-      I build web applications with Django and Flask, and I'm skilled in
-      accessible UI development with HTML, CSS, and JavaScript/TypeScript. Below
-      are some of my web development projects, including deployed sites you can
-      visit live.
-    </p>
-
-    <ul class="project-list" aria-label="Web development projects">
-      <li class="project-card">
-        <span class="tag">Web Development</span>
-        <h3>
-          <a
-            href="https://github.com/jacob-torres/story-builder"
-            rel="external noopener"
-            aria-label="Story Builder on GitHub (opens in new tab)"
-          >
-            Story Builder
-          </a>
-        </h3>
-        <p>
-          A web application for collaboratively writing and organizing short
-          fiction and stories.
-        </p>
-      </li>
-      <li class="project-card">
-        <span class="tag">Live Site</span>
-        <h3>
-          <a
-            href="https://jacob-torres.github.io/Denver-Streets"
-            rel="external noopener"
-            aria-label="Denver Street Guide (opens in new tab)"
-          >
-            Denver Street Guide
-          </a>
-        </h3>
-        <p>
-          An operations and maintenance street reference guide for the Denver
-          metro area.
-        </p>
-      </li>
-      <li class="project-card">
-        <span class="tag">Live Site</span>
-        <h3>
-          <a
-            href="https://denver-nav.onrender.com"
-            rel="external noopener"
-            aria-label="Accessible Denver Navigation App (opens in new tab)"
-          >
-            Accessible Denver Navigation App
-          </a>
-        </h3>
-        <p>
-          An accessible navigation application for getting around the Denver
-          metro area.
-        </p>
-      </li>
-    </ul>
-  </section>
-
-  <section aria-labelledby="data-analysis">
-    <h2 id="data-analysis">Data Analysis</h2>
-
-    <p>
-      Statistical analysis and data storytelling, mostly in Python with pandas,
-      SciPy, and Matplotlib. The write-up below is from a project examining
-      federal housing data.
-    </p>
 
     <article class="article-body" aria-labelledby="housing-the-homeless">
       <div class="article-header">
@@ -383,5 +311,67 @@ import Layout from '../../layouts/Layout.astro';
         </li>
       </ol>
     </article>
+  </section>
+
+  <section aria-labelledby="web-development">
+    <h2 id="web-development">Web Development</h2>
+
+    <p>
+      I build web applications with Django and Flask, and I'm skilled in
+      accessible UI development with HTML, CSS, and JavaScript/TypeScript. Below
+      are some of my web development projects, including deployed sites you can
+      visit live.
+    </p>
+
+    <ul class="project-list" aria-label="Web development projects">
+      <li class="project-card">
+        <span class="tag">Web Development</span>
+        <h3>
+          <a
+            href="https://github.com/jacob-torres/story-builder"
+            rel="external noopener"
+            aria-label="Story Builder on GitHub (opens in new tab)"
+          >
+            Story Builder
+          </a>
+        </h3>
+        <p>
+          A web application for collaboratively writing and organizing short
+          fiction and stories.
+        </p>
+      </li>
+      <li class="project-card">
+        <span class="tag">Live Site</span>
+        <h3>
+          <a
+            href="https://jacob-torres.github.io/Denver-Streets"
+            rel="external noopener"
+            aria-label="Denver Street Guide (opens in new tab)"
+          >
+            Denver Street Guide
+          </a>
+        </h3>
+        <p>
+          An operations and maintenance street reference guide for the Denver
+          metro area.
+        </p>
+      </li>
+      <li class="project-card">
+        <span class="tag">Live Site</span>
+        <h3>
+          <a
+            href="https://denver-nav.onrender.com"
+            rel="external noopener"
+            aria-label="Accessible Denver Navigation App (opens in new tab)"
+          >
+            Accessible Denver Navigation App
+          </a>
+        </h3>
+        <p>
+          An accessible navigation application for getting around the Denver
+          metro area.
+        </p>
+      </li>
+    </ul>
   </section>
 </Layout>
