@@ -24,6 +24,7 @@ import Layout from '../../layouts/Layout.astro';
     <ul>
       <li><a href="#data-science">Data Science</a></li>
       <li><a href="#web-development">Web Development</a></li>
+      <li><a href="#accessibility-tools">Accessibility Tools</a></li>
     </ul>
   </nav>
 
@@ -163,6 +164,57 @@ import Layout from '../../layouts/Layout.astro';
         <p>
           An accessible navigation application for getting around the Denver
           metro area.
+        </p>
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="accessibility-tools">
+    <h2 id="accessibility-tools">Accessibility Tools</h2>
+
+    <p>
+      Much of my work is about making tools usable without sight. Here is a
+      command-line tool I built so that a screen reader user can do the same
+      acoustic phonetics work as everyone else.
+    </p>
+
+    <ul class="project-list" aria-label="Accessibility tools">
+      <li class="project-card">
+        <span class="tag">Accessibility</span>
+        <h3>
+          <a
+            href="https://github.com/jacob-torres/praatshell"
+            rel="external noopener"
+          >
+            praatshell
+          </a>
+        </h3>
+        <p>
+          A screen-reader-first command shell for phonetic analysis, written in
+          Python on top of Praat's own analysis engine (through the
+          parselmouth library).
+        </p>
+        <p>
+          <strong>The accessible use case:</strong> Praat is the standard free
+          program for acoustic phonetics, but nearly all of it happens in
+          graphical windows. The waveform and the spectrogram are pictures with
+          no spoken equivalent, so a screen reader cannot get at them, and a
+          student who uses one is locked out of the coursework. praatshell makes
+          the same measurements through Praat's engine and reports them as
+          text. You type a command such as <code>describe</code>,
+          <code>vowels</code> or <code>spectrogram</code>, and it answers in a
+          sentence or two, with the full detail written to a report file and
+          CSVs you can read at your own pace.
+        </p>
+        <p>
+          It divides a recording into regions and says in words what the
+          waveform is doing: whether it is periodic, how its loudness rises and
+          falls, and where its energy sits in frequency. It describes
+          spectrograms and power spectra in prose, with formants, harmonics,
+          spectral moments and a choice of window width, and it tables
+          vowel durations and voice onset times. I checked its measurements
+          against my own hand measurements in Praat, and they agree to within a
+          few milliseconds.
         </p>
       </li>
     </ul>
