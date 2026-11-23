@@ -75,6 +75,49 @@ import Layout from '../../layouts/Layout.astro';
           <a href="/projects/airbnb-optimal-price">Read the write-up &rarr;</a>
         </p>
       </li>
+      <li class="project-card">
+        <span class="tag">Machine Learning</span>
+        <h3>
+          <a href="/notebooks/fuel-type-classification.html">
+            Predicting a Vehicle's Fuel Technology
+          </a>
+        </h3>
+        <p>
+          A multi-class classifier that identifies a vehicle as gasoline,
+          hybrid, plug-in, EV, diesel, or flex-fuel from its specifications,
+          built on about 50,000 EPA fuel economy records.
+        </p>
+        <p>
+          Tuned k-nearest neighbors reached 92.4% accuracy against an 86.5%
+          majority-class baseline, but a macro F1 of 0.61 and per-class recall
+          show where it still fails: plug-ins and flex-fuel vehicles.
+        </p>
+        <p>
+          <a href="/notebooks/fuel-type-classification.html">Read the notebook &rarr;</a>
+        </p>
+      </li>
+      <li class="project-card">
+        <span class="tag">Machine Learning</span>
+        <h3>
+          <a href="/notebooks/grid-battery-rl-agent.html">
+            Grid Day Types and a Learning Battery
+          </a>
+        </h3>
+        <p>
+          Three kinds of machine learning on two years of hourly electricity
+          demand from Colorado's grid: k-means finds the kinds of day, a
+          classifier predicts tomorrow's kind at midnight, and a Q-learning
+          agent learns when a battery should charge and discharge.
+        </p>
+        <p>
+          The agent captured 83% of the best possible schedule, but a simple
+          rule fitted to the average day did just as well, a result I report
+          beside every baseline.
+        </p>
+        <p>
+          <a href="/notebooks/grid-battery-rl-agent.html">Read the notebook &rarr;</a>
+        </p>
+      </li>
     </ul>
 
     <div class="teaser">
